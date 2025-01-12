@@ -160,6 +160,7 @@ export const addTransactionCapability = (
 						let tries = maxCommitRetries
 						while(tries) {
 							tries -= 1
+							//eslint-disable-next-line max-depth
 							try {
 								await state.set(mutations)
 								logger.trace({ dbQueriesInTransaction }, 'committed transaction')
@@ -195,6 +196,7 @@ export const initAuthCreds = (): AuthenticationCreds => {
 	const identityKey = Curve.generateKeyPair()
 	return {
 		noiseKey: Curve.generateKeyPair(),
+		pairingEphemeralKeyPair: Curve.generateKeyPair(),
 		signedIdentityKey: identityKey,
 		signedPreKey: signedKeyPair(identityKey, 1),
 		registrationId: generateRegistrationId(),
@@ -205,6 +207,10 @@ export const initAuthCreds = (): AuthenticationCreds => {
 		accountSyncCounter: 0,
 		accountSettings: {
 			unarchiveChats: false
-		}
+		},
+		registered: false,
+		pairingCode: undefined,
+		lastPropHash: undefined,
+		routingInfo: undefined,
 	}
 }
